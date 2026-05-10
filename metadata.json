@@ -1,0 +1,13 @@
+{
+  "name": "PitchTube",
+  "description": "A high-energy startup ecosystem platform where founders upload tiered video pitches and investors share their investment theses. Features the 'Burn Meter' momentum indicator and a professional command dashboard.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "Video Streaming",
+    "Real-time Analytics",
+    "AI-powered Pitch Scoring"
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Public and private user data",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["founder", "investor", "admin"] },
+        "onboarded": { "type": "boolean" },
+        "notificationSettings": {
+          "type": "object",
+          "properties": {
+            "emailNewPitches": { "type": "boolean" },
+            "emailInvestments": { "type": "boolean" },
+            "emailTransactions": { "type": "boolean" }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "email"]
+    },
+    "Pitch": {
+      "title": "Startup Pitch",
+      "description": "Video pitch and metadata",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "founderId": { "type": "string" },
+        "company_name": { "type": "string" },
+        "founder_name": { "type": "string" },
+        "tagline": { "type": "string" },
+        "video_url": { "type": "string" },
+        "thumbnail_url": { "type": "string" },
+        "deck_url": { "type": "string" },
+        "burn_rate": { "type": "number" },
+        "funding_goal": { "type": "number" },
+        "view_count": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Intrestor": {
+      "title": "Investment Thesis",
+      "description": "Investor profile and thesis video",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "investor_name": { "type": "string" },
+        "firm_name": { "type": "string" },
+        "video_url": { "type": "string" },
+        "thumbnail_url": { "type": "string" },
+        "min_check": { "type": "string" },
+        "max_check": { "type": "string" },
+        "focus_industries": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "UserPost": {
+      "title": "User Post",
+      "description": "Text-based update from a user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "content": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "UserDocument": {
+      "title": "User Document",
+      "description": "File upload (PDF, DOCX, etc.)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "fileURL": { "type": "string" },
+        "fileType": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "UserImage": {
+      "title": "User Image",
+      "description": "Image update or portfolio item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "imageURL": { "type": "string" },
+        "caption": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Comment": {
+      "title": "Item Comment",
+      "description": "Comment on a pitch or investor profile",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "itemId": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userPhoto": { "type": "string" },
+        "userRole": { "type": "string" },
+        "content": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["itemId", "userId", "content"]
+    },
+    "UserInteraction": {
+      "title": "User Interaction",
+      "description": "Tracks views and saves for analytics",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "itemId": { "type": "string" },
+        "type": { "type": "string", "enum": ["view", "save"] },
+        "itemType": { "type": "string", "enum": ["pitch", "intrestor"] },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "itemId", "type", "itemType"]
+    },
+    "Wallet": {
+      "title": "User Wallet",
+      "description": "Virtual balance and financial summary",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "balance": { "type": "number" },
+        "totalEarned": { "type": "number" },
+        "totalSpent": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Transaction": {
+      "title": "Financial Transaction",
+      "description": "Record of coin purchase, gift, or withdrawal",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "targetUserId": { "type": "string" },
+        "amount": { "type": "number" },
+        "type": { "type": "string", "enum": ["purchase", "gift", "withdrawal"] },
+        "method": { "type": "string", "enum": ["system", "bitcoin", "paypal", "bank"] },
+        "status": { "type": "string", "enum": ["pending", "completed", "failed"] },
+        "metadata": { "type": "object" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Storage for user profiles"
+    },
+    "/wallets/{userId}": {
+      "schema": "Wallet",
+      "description": "Virtual wallets for coins"
+    },
+    "/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "History of all token-related events"
+    },
+    "/pitches/{pitchId}": {
+      "schema": "Pitch",
+      "description": "Collection of all startup pitches"
+    },
+    "/intrestors/{intrestorId}": {
+      "schema": "Intrestor",
+      "description": "Collection of all investor theses"
+    },
+    "/posts/{postId}": {
+      "schema": "UserPost",
+      "description": "Collection of user status updates"
+    },
+    "/documents/{docId}": {
+      "schema": "UserDocument",
+      "description": "Collection of user uploaded documents"
+    },
+    "/images/{imageId}": {
+      "schema": "UserImage",
+      "description": "Collection of user uploaded images"
+    },
+    "/comments/{commentId}": {
+      "schema": "Comment",
+      "description": "Global comments collection"
+    },
+    "/user_interactions/{id}": {
+      "schema": "UserInteraction",
+      "description": "Collection tracks all analytics interactions"
+    }
+  }
+}
